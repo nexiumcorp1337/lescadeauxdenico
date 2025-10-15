@@ -1,0 +1,115 @@
+/* === BANDE 2 : BEST-SELLERS === */
+.bestsellers-band {
+  background: linear-gradient(135deg, #FAFAFA 0%, #F5F7FA 100%);
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+}
+
+.bestsellers-band::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-red-orange), transparent);
+  opacity: 0.3;
+}
+
+.bestsellers-band h2 {
+  position: relative;
+  display: inline-block;
+}
+
+.bestsellers-band h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-red-orange);
+  border-radius: 2px;
+}
+
+/* === CARDS BEST-SELLERS SPÉCIFIQUES === */
+.bestsellers-band .card {
+  cursor: pointer;
+  position: relative;
+  border: none;
+  background: var(--white);
+  transition: box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.bestsellers-band .card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transform: none;
+}
+
+.bestsellers-band .card-img-top {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.bestsellers-band .card-img-top:hover,
+.bestsellers-band .card:hover .card-img-top {
+  transform: scale(1.1);
+}
+
+.bestsellers-band .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(226, 97, 85, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bestsellers-band .card:hover::before {
+  opacity: 1;
+}
+
+.bestsellers-band .card-title {
+  color: var(--primary-gray-dark) !important;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.bestsellers-band .card:hover .card-title {
+  color: var(--accent-red-orange) !important;
+}
+
+.bestsellers-band .price {
+  color: var(--accent-red-orange) !important;
+  font-weight: 700;
+  font-size: 1.25rem;
+  transition: none;
+}
+
+.bestsellers-band .btn {
+  display: none !important;
+}
+
+.bestsellers-band .card:active {
+  transform: scale(0.98);
+}
+
+.bestsellers-band .badge-new {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+}

@@ -1,0 +1,36 @@
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background-color: var(--white);
+    border-top: 1px solid var(--border-light);
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-collapse .nav-link {
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .navbar-brand .logo { height: 40px; }
+}
+
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  
+  .logo-hero { height: 80px; max-width: 200px; }
+  
+  .hero-band .display-4 { font-size: 2.5rem; }
+  .contact-band .display-5 { font-size: 2rem; }
+  
+  .btn-primary, .btn-secondary, .btn-lg { width: 100%; margin-bottom: 1rem; }
+  .hero-band .btn-lg { width: 100%; }
+}
+
+@media (max-width: 576px) {
+  .hero-band,
+  .bestsellers-band,
+  .contact-band { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+}

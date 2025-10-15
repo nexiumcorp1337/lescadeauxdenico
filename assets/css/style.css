@@ -1,0 +1,13 @@
+/* === IMPORTS MODULAIRES === */
+@import url('./main.css');
+@import url('./components/buttons.css');
+@import url('./components/cards.css');
+@import url('./components/navbar.css');
+@import url('./components/logo.css');
+@import url('./components/forms.css');
+@import url('./sections/hero.css');
+@import url('./sections/bestsellers.css');
+@import url('./sections/contact.css');
+@import url('./sections/footer.css');
+@import url('./layout/animations.css');
+@import url('./layout/responsive.css');

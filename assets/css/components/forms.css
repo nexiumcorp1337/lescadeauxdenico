@@ -1,0 +1,12 @@
+input, textarea, select {
+  border: 2px solid var(--border-light);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent-red-orange);
+  box-shadow: 0 0 0 3px rgba(226, 97, 85, 0.1);
+}
