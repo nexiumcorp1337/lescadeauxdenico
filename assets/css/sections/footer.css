@@ -1,0 +1,219 @@
+/* === FOOTER GÉNÉRAL === */
+footer {
+    background-color: var(--bg-white);
+    border-top: 1px solid var(--border-light);
+    font-size: 0.95rem;
+    margin-top: auto; /* Pour les pages avec flex sur body */
+}
+
+footer .container {
+    max-width: 1200px;
+}
+
+footer h5 {
+    color: var(--accent-red-orange);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+footer h5::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background-color: var(--accent-red-orange);
+    border-radius: 1px;
+}
+
+footer p,
+footer ul li a,
+footer span,
+footer small {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+footer a {
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+footer a:hover {
+    color: var(--accent-red-orange) !important;
+}
+
+/* === LOGO ET DESCRIPTION === */
+footer .logo {
+    height: 40px;
+    transition: transform 0.3s ease;
+}
+
+footer .logo:hover {
+    transform: scale(1.05);
+}
+
+footer .social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    border-radius: 50%;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+footer .social-links a:hover {
+    background-color: var(--accent-red-orange);
+    border-color: var(--accent-red-orange);
+    color: var(--white) !important;
+    transform: translateY(-2px);
+}
+
+/* === LIENS ET LISTES === */
+footer ul.list-unstyled {
+    padding: 0;
+    margin: 0;
+}
+
+footer ul li {
+    margin-bottom: 0.75rem;
+}
+
+footer ul li a {
+    position: relative;
+    padding-left: 0;
+    transition: padding-left 0.3s ease;
+}
+
+footer ul li a:hover {
+    padding-left: 5px;
+}
+
+/* === CONTACT ICONES === */
+footer .fas,
+footer .fab {
+    color: var(--accent-red-orange);
+    width: 16px;
+    margin-right: 0.5rem;
+}
+
+/* === COPYRIGHT ET MENTIONS === */
+footer .bg-light {
+    background-color: var(--bg-light) !important;
+    border-top: 1px solid var(--border-light);
+}
+
+footer .text-primary {
+    color: var(--accent-red-orange) !important;
+    font-weight: 600;
+}
+
+footer .text-secondary {
+    font-size: 0.9rem;
+}
+
+/* === BOUTON BACK-TO-TOP === */
+#back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    background-color: var(--accent-red-orange);
+    color: var(--white);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(226, 97, 85, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+#back-to-top:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(226, 97, 85, 0.4);
+}
+
+#back-to-top i {
+    color: var(--white) !important; /* ✅ Icône blanche visible sur fond rouge */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* ✅ Contraste supplémentaire */
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 992px) {
+    footer .row.g-4 {
+        text-align: center;
+    }
+    
+    footer .social-links {
+        justify-content: center;
+    }
+    
+    footer h5::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    footer ul li a:hover {
+        padding-left: 0;
+        padding-bottom: 2px;
+        border-bottom: 1px solid var(--accent-red-orange);
+    }
+}
+
+@media (max-width: 768px) {
+    footer .col-lg-4,
+    footer .col-lg-2 {
+        margin-bottom: 2rem;
+    }
+    
+    footer .bg-light .row {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    footer .bg-light .col-md-6:last-child {
+        margin-top: 1rem;
+    }
+    
+    #back-to-top {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+        bottom: 15px;
+        right: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    footer {
+        font-size: 0.85rem;
+    }
+    
+    footer .container.py-5 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
+    footer .social-links a {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+}
+
