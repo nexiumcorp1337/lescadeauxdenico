@@ -302,7 +302,7 @@ async function renderHome() {
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${p.title}</h5>
                     <div class="mt-auto">
-                        <div class="price text-accent fw-bold">${p.price}€</div>
+                        <div class="price text-accent fw-bold">${p.price}</div>
                     </div>
                 </div>
             </div>
