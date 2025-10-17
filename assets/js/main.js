@@ -8,6 +8,11 @@ function createElementFromHTML(htmlString) {
     return div.firstChild;
 }
 
+// Retourne le nom du fichier sans extension ni dossier
+function getBaseName(path) {
+    return path.replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
+}
+
 // Fetch products
 async function fetchProducts() {
     try {
@@ -25,38 +30,24 @@ function attachCardClickListeners() {
     const productCards = document.querySelectorAll('.card[data-product-slug]');
     
     productCards.forEach(card => {
-        // Cloner pour éviter doublons listeners
         const newCard = card.cloneNode(true);
         card.parentNode.replaceChild(newCard, card);
         
         newCard.addEventListener('click', function(e) {
-            // Ne pas interférer avec boutons/liens
-            if (e.target.closest('a') || e.target.closest('.btn')) {
-                return;
-            }
-            
+            if (e.target.closest('a') || e.target.closest('.btn')) return;
             const slug = this.dataset.productSlug;
-            if (slug) {
-                window.location.href = `product.html?slug=${slug}`;
-            }
+            if (slug) window.location.href = `product.html?slug=${slug}`;
         });
         
-        // Effet visuel clic
         newCard.addEventListener('mousedown', function() {
             this.style.transform = 'scale(0.98)';
             this.style.transition = 'transform 0.1s ease';
         });
-        
         newCard.addEventListener('mouseup', function() {
             this.style.transform = '';
-            setTimeout(() => {
-                this.style.transition = 'box-shadow 0.3s ease';
-            }, 100);
+            setTimeout(() => { this.style.transition = 'box-shadow 0.3s ease'; }, 100);
         });
-        
-        newCard.addEventListener('mouseleave', function() {
-            this.style.transform = '';
-        });
+        newCard.addEventListener('mouseleave', function() { this.style.transform = ''; });
     });
 }
 
@@ -65,45 +56,54 @@ async function renderCatalogue() {
     const container = document.getElementById('product-grid');
     const filterContainer = document.getElementById('filter-container');
     const paginationContainer = document.getElementById('pagination-container');
- 
     if (!container || !filterContainer || !paginationContainer) return;
- 
+
     const products = await fetchProducts();
-    if (products.length === 0) {
+    if (!products.length) {
         container.innerHTML = '<p class="text-center">Aucun produit trouvé.</p>';
         return;
     }
-    
-    // Filtres avec classes CSS
+
     const categories = [...new Set(products.map(p => p.category))];
     filterContainer.innerHTML = categories.map(cat =>
         `<button class="btn filter-btn me-2 mb-2" data-category="${cat}">${cat}</button>`
     ).join('') + `<button class="btn filter-btn mb-2" data-category="all">Tous</button>`;
-    
-    // Pagination state
+
     let currentPage = 1;
     let filteredProducts = [...products];
-    
+
     function renderPage() {
         const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
         const pageItems = filteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
-       
+
         container.innerHTML = pageItems.map(p => `
             <div class="col">
                 <div class="card h-100 shadow-sm" data-product-slug="${p.slug}">
-                    <img src="${p.images[0]}" class="card-img-top" alt="${p.title}" loading="lazy">
+                    <div class="card-img-wrapper">
+                        <img 
+                            src="assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp"
+                            srcset="
+                                assets/img/products/webp/small/${getBaseName(p.images[0])}.webp 600w,
+                                assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp 1200w,
+                                assets/img/products/webp/large/${getBaseName(p.images[0])}.webp 2000w
+                            "
+                            sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            class="catalog-img"
+                            alt="${p.title}"
+                            loading="lazy"
+                        >
+                    </div>
                     ${p.isNew ? '<span class="badge badge-new">Nouveau</span>' : ''}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${p.title}</h5>
                         <p class="card-text">${p.shortDescription}</p>
-                        <div class="price text-accent fw-bold">${p.price}€</div>
+                        <div class="price text-accent fw-bold">${p.price}</div>
                         <a href="product.html?slug=${p.slug}" class="btn btn-primary mt-2">Voir le produit</a>
                     </div>
                 </div>
             </div>
         `).join('');
-        
-        // Pagination
+
         const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
         paginationContainer.innerHTML = `
             <nav>
@@ -121,8 +121,7 @@ async function renderCatalogue() {
                 </ul>
             </nav>
         `;
-        
-        // Pagination events
+
         paginationContainer.querySelectorAll('.page-btn').forEach((btn, i) => {
             btn.onclick = () => { currentPage = i + 1; renderPage(); };
         });
@@ -132,50 +131,48 @@ async function renderCatalogue() {
         paginationContainer.querySelector('.next')?.addEventListener('click', () => {
             if(currentPage < totalPages) { currentPage++; renderPage(); }
         });
-        
-        // Attacher listeners après rendu
+
         attachCardClickListeners();
     }
-    
-    // Filter events
+
     filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
+
             const cat = this.dataset.category;
             filteredProducts = cat === 'all' ? [...products] : products.filter(p => p.category === cat);
             currentPage = 1;
             renderPage();
         });
     });
-    
-    // Activer "Tous" par défaut
+
     filterContainer.querySelector('[data-category="all"]').classList.add('active');
     renderPage();
 }
 
-// Render product page
+
+/// Render product page
 async function renderProduct() {
     const container = document.getElementById('product-container');
     if (!container) return;
- 
+
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug');
- 
+
     if (!slug) {
         container.innerHTML = '<p class="text-center">Produit introuvable.</p>';
         return;
     }
- 
+
     const products = await fetchProducts();
     const product = products.find(p => p.slug === slug);
- 
+
     if (!product) {
         container.innerHTML = '<p class="text-center">Produit introuvable.</p>';
         return;
     }
- 
+
     container.innerHTML = `
         <div class="row g-4">
             <div class="col-md-6">
@@ -183,7 +180,12 @@ async function renderProduct() {
                     <div class="carousel-inner">
                         ${product.images.map((img, i) => `
                             <div class="carousel-item ${i===0?'active':''}">
-                                <img src="${img}" class="d-block w-100" alt="${product.title}" loading="lazy">
+                                <img 
+                                  src="assets/img/products/webp/medium/${getBaseName(img)}.webp"
+                                  class="product-carousel-img"
+                                  alt="${product.title}"
+                                  loading="lazy"
+                                >
                             </div>
                         `).join('')}
                     </div>
@@ -196,7 +198,23 @@ async function renderProduct() {
                         <span class="visually-hidden">Suivant</span>
                     </button>
                 </div>
+
+                <!-- Bandeau miniatures avec flèches -->
+                <div class="thumbnails-container mt-3">
+                    <button class="thumb-nav prev">&lt;</button>
+                    <div class="thumbnails-wrapper">
+                        ${product.images.map((img, i) => `
+                            <img class="thumbnail ${i===0?'active':''}" 
+                                 src="assets/img/products/webp/small/${getBaseName(img)}.webp" 
+                                 data-bs-target="#carousel-${product.slug}" 
+                                 data-bs-slide-to="${i}" 
+                                 alt="${product.title}">
+                        `).join('')}
+                    </div>
+                    <button class="thumb-nav next">&gt;</button>
+                </div>
             </div>
+
             <div class="col-md-6">
                 <h2>${product.title}</h2>
                 <p>${product.description}</p>
@@ -205,7 +223,7 @@ async function renderProduct() {
                     <li><strong>Dimensions :</strong> ${product.dimensions}</li>
                     <li><strong>Personnalisation :</strong> ${product.customizationOptions.join(', ')}</li>
                 </ul>
-                <p class="price text-accent fw-bold fs-3">${product.price}€</p>
+                <p class="price text-accent fw-bold fs-3">${product.price}</p>
                 <a href="mailto:contact@lescadeauxdenico.fr?subject=Personnalisation ${encodeURIComponent(product.title)}" 
                    class="btn btn-primary btn-lg w-100">
                    <i class="fas fa-envelope me-2"></i> Me contacter pour personnaliser
@@ -213,12 +231,36 @@ async function renderProduct() {
             </div>
         </div>
     `;
-    
-    // Initialiser carousel
-    setTimeout(() => {
-        new bootstrap.Carousel(document.getElementById(`carousel-${product.slug}`));
-    }, 100);
+
+    // Initialiser le carousel Bootstrap
+    const carouselEl = document.getElementById(`carousel-${product.slug}`);
+    const carouselInstance = new bootstrap.Carousel(carouselEl);
+
+    // Gestion miniatures
+    const thumbnailsWrapper = container.querySelector('.thumbnails-wrapper');
+    const thumbPrev = container.querySelector('.thumb-nav.prev');
+    const thumbNext = container.querySelector('.thumb-nav.next');
+    const thumbnails = container.querySelectorAll('.thumbnail');
+    const scrollAmount = 80; // largeur approx d'une miniature + gap
+
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            thumbnails.forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+            const index = parseInt(thumb.dataset.bsSlideTo, 10);
+            carouselInstance.to(index);
+        });
+    });
+
+    // Flèches bandeau
+    thumbPrev.addEventListener('click', () => {
+        thumbnailsWrapper.scrollBy({ left: -scrollAmount*3, behavior: 'smooth' });
+    });
+    thumbNext.addEventListener('click', () => {
+        thumbnailsWrapper.scrollBy({ left: scrollAmount*3, behavior: 'smooth' });
+    });
 }
+
 
 // Render home best-sellers
 async function renderHome() {
@@ -236,12 +278,23 @@ async function renderHome() {
     container.innerHTML = bestsellers.map(p => `
         <div class="col-lg-4 col-md-6">
             <div class="card h-100" data-product-slug="${p.slug}">
-                <img src="${p.images[0]}" class="card-img-top" alt="${p.title}" loading="lazy">
+                <img 
+                  src="assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp"
+                  srcset="
+                      assets/img/products/webp/small/${getBaseName(p.images[0])}.webp 600w,
+                      assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp 1200w,
+                      assets/img/products/webp/large/${getBaseName(p.images[0])}.webp 2000w
+                  "
+                  sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  class="card-img-top"
+                  alt="${p.title}"
+                  loading="lazy"
+                >
                 ${p.isNew ? '<span class="badge badge-new">Nouveau</span>' : ''}
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${p.title}</h5>
                     <div class="mt-auto">
-                        <div class="price text-accent fw-bold">${p.price}€</div>
+                        <div class="price text-accent fw-bold">${p.price}</div>
                     </div>
                 </div>
             </div>
@@ -263,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderHome();
     }
     
-    // Back to top
     window.addEventListener('scroll', () => {
         const backToTop = document.getElementById('back-to-top');
         if (window.scrollY > 300) {
