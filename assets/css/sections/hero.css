@@ -35,3 +35,23 @@
 .hero-band .btn:hover i {
   transform: scale(1.2);
 }
+
+/* === SLOGAN HERO - PLUS PETIT === */
+.hero-band h1.display-4 {
+    font-size: 2.25rem !important; /* ✅ -0.25rem (Bootstrap display-4 = 2.5rem) */
+    line-height: 1.2;
+    margin-bottom: 2rem;
+}
+
+/* RESPONSIVE SLOGAN */
+@media (max-width: 768px) {
+    .hero-band h1.display-4 {
+        font-size: 1.875rem !important; /* ✅ Plus petit mobile */
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-band h1.display-4 {
+        font-size: 1.625rem !important; /* ✅ Encore plus petit */
+    }
+}

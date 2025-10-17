@@ -9,12 +9,12 @@
 .logo:hover { transform: scale(1.05); }
 
 .logo-hero {
-  height: 160px;
-  max-width: 400px;
-  width: auto;
-  margin: 0 auto;
-  display: block;
-  animation: bounceIn 1.2s ease-out;
+    height: 300px; 
+    max-width: 725px; 
+    width: auto;
+    margin: 0 auto;
+    display: block;
+    animation: bounceIn 1.2s ease-out;
 }
 
 .logo-text {

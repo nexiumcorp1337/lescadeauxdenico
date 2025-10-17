@@ -88,7 +88,7 @@ async function renderCatalogue() {
                                 assets/img/products/webp/large/${getBaseName(p.images[0])}.webp 2000w
                             "
                             sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            class="catalog-img"
+                            class="card-img-top"
                             alt="${p.title}"
                             loading="lazy"
                         >
@@ -226,7 +226,7 @@ async function renderProduct() {
                 <p class="price text-accent fw-bold fs-3">${product.price}</p>
                 <a href="mailto:contact@lescadeauxdenico.fr?subject=Personnalisation ${encodeURIComponent(product.title)}" 
                    class="btn btn-primary btn-lg w-100">
-                   <i class="fas fa-envelope me-2"></i> Me contacter pour personnaliser
+                   <i class="fas fa-envelope me-2"></i> Nous contacter pour personnaliser
                 </a>
             </div>
         </div>
@@ -249,6 +249,12 @@ async function renderProduct() {
             thumb.classList.add('active');
             const index = parseInt(thumb.dataset.bsSlideTo, 10);
             carouselInstance.to(index);
+
+            // Centrer la miniature active dans le bandeau
+            const wrapperWidth = thumbnailsWrapper.offsetWidth;
+            const thumbWidth = thumb.offsetWidth;
+            const scrollLeft = thumb.offsetLeft - (wrapperWidth / 2) + (thumbWidth / 2);
+            thumbnailsWrapper.scrollTo({ left: scrollLeft, behavior: 'smooth' });
         });
     });
 
@@ -262,11 +268,11 @@ async function renderProduct() {
 }
 
 
-// Render home best-sellers
+// Render home best-sellers - AVEC WRAPPER ZOOM ✅
 async function renderHome() {
     const container = document.getElementById('home-products');
     if (!container) return;
- 
+    
     const products = await fetchProducts();
     if (!products.length) {
         container.innerHTML = '<p class="text-center">Aucun produit à afficher.</p>';
@@ -274,27 +280,29 @@ async function renderHome() {
     }
     
     const bestsellers = products.filter(p => p.isBestseller).slice(0, 6) || products.slice(0, 6);
- 
+    
     container.innerHTML = bestsellers.map(p => `
         <div class="col-lg-4 col-md-6">
             <div class="card h-100" data-product-slug="${p.slug}">
-                <img 
-                  src="assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp"
-                  srcset="
-                      assets/img/products/webp/small/${getBaseName(p.images[0])}.webp 600w,
-                      assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp 1200w,
-                      assets/img/products/webp/large/${getBaseName(p.images[0])}.webp 2000w
-                  "
-                  sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  class="card-img-top"
-                  alt="${p.title}"
-                  loading="lazy"
-                >
+                <div class="card-img-wrapper">
+                    <img
+                        src="assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp"
+                        srcset="
+                            assets/img/products/webp/small/${getBaseName(p.images[0])}.webp 600w,
+                            assets/img/products/webp/medium/${getBaseName(p.images[0])}.webp 1200w,
+                            assets/img/products/webp/large/${getBaseName(p.images[0])}.webp 2000w
+                        "
+                        sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        class="card-img-top"
+                        alt="${p.title}"
+                        loading="lazy"
+                    >
+                </div>
                 ${p.isNew ? '<span class="badge badge-new">Nouveau</span>' : ''}
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${p.title}</h5>
                     <div class="mt-auto">
-                        <div class="price text-accent fw-bold">${p.price}</div>
+                        <div class="price text-accent fw-bold">${p.price}€</div>
                     </div>
                 </div>
             </div>

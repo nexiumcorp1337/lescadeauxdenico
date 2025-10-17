@@ -17,22 +17,23 @@
     background: var(--white);
 }
 
-/* Wrapper et image centrées sans casser le carousel */
+/* ✅ ZOOM SUBTIL SUR CAROUSEL */
 #product-container .carousel-inner {
-    text-align: center;      /* centre horizontalement */
-    background-color: #ffffff; /* fond blanc derrière toutes les images */
+    text-align: center;
+    background-color: #ffffff;
 }
 
 #product-container .carousel-item img {
-    display: inline-block;   /* important pour Bootstrap */
-    margin: 0 auto;          /* centre horizontalement */
-    object-fit: contain;     /* l’image garde ses proportions */
-    height: 450px;           /* fixe ou adaptable selon besoin */
+    display: inline-block;
+    margin: 0 auto;
+    object-fit: contain;
+    height: 450px;
     transition: transform 0.3s ease;
+    cursor: zoom-in;
 }
 
 #product-container .carousel-item:hover img {
-    transform: none; /* supprime le zoom au hover */
+    transform: scale(1.02); /* ✅ Zoom subtil sur carousel */
 }
 
 /* === FLECHES CAROUSEL === */
@@ -40,8 +41,8 @@
 #product-container .carousel-control-next {
     width: 5%;
     opacity: 0.7;
-    z-index: 10;               /* assure que les flèches sont au-dessus des images */
-    top: 50%;                  /* centre verticalement */
+    z-index: 10;
+    top: 50%;
     transform: translateY(-50%);
 }
 
@@ -52,8 +53,8 @@
 
 #product-container .carousel-control-prev-icon,
 #product-container .carousel-control-next-icon {
-    background-color: rgba(0,0,0,0.5); /* fond pour visibilité */
-    border-radius: 50%;                /* optionnel, plus joli */
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 50%;
 }
 
 /* === BANDEAU MINIATURES === */
