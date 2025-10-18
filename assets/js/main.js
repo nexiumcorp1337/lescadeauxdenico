@@ -10,19 +10,27 @@ function createElementFromHTML(htmlString) {
 
 // Retourne le nom du fichier sans extension ni dossier
 function getBaseName(path) {
-    return path.replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, "");
+  if (!path || typeof path !== 'string') return '';
+  return path.replace(/^.*[\\\/]/, '').replace(/\.[^/.]+$/, '');
 }
 
 // Fetch products
 async function fetchProducts() {
-    try {
-        const res = await fetch(PRODUCTS_URL);
-        if (!res.ok) throw new Error('Impossible de charger products.json');
-        return await res.json();
-    } catch (err) {
-        console.error(err);
-        return [];
-    }
+  try {
+    const res = await fetch(PRODUCTS_URL);
+    if (!res.ok) throw new Error('Impossible de charger les produits.');
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    const containers = ['home-products', 'product-grid', 'product-container'];
+    containers.forEach(id => {
+      const container = document.getElementById(id);
+      if (container) {
+        container.innerHTML = '<p class="text-center text-danger">Erreur : impossible de charger les produits. Veuillez réessayer plus tard.</p>';
+      }
+    });
+    return [];
+  }
 }
 
 // Fonction SIMPLIFIÉE pour event listeners cards
@@ -176,42 +184,40 @@ async function renderProduct() {
     container.innerHTML = `
         <div class="row g-4">
             <div class="col-md-6">
-                <div id="carousel-${product.slug}" class="carousel slide" data-bs-ride="carousel">
+                <div id="carousel-${product.slug}" class="carousel slide" data-bs-ride="carousel" role="region" aria-label="Galerie d'images du produit">
                     <div class="carousel-inner">
-                        ${product.images.map((img, i) => `
-                            <div class="carousel-item ${i===0?'active':''}">
-                                <img 
-                                  src="assets/img/products/webp/medium/${getBaseName(img)}.webp"
-                                  class="product-carousel-img"
-                                  alt="${product.title}"
-                                  loading="lazy"
-                                >
-                            </div>
-                        `).join('')}
+                    ${product.images.map((img, i) => `
+                        <div class="carousel-item ${i===0?'active':''}">
+                        <img
+                            src="assets/img/products/webp/medium/${getBaseName(img)}.webp"
+                            class="product-carousel-img"
+                            alt="${product.title} - Image ${i+1}"
+                            loading="lazy"
+                        >
+                        </div>
+                    `).join('')}
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${product.slug}" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Précédent</span>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${product.slug}" data-bs-slide="prev" aria-label="Image précédente">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-${product.slug}" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Suivant</span>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-${product.slug}" data-bs-slide="next" aria-label="Image suivante">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     </button>
                 </div>
-
-                <!-- Bandeau miniatures avec flèches -->
-                <div class="thumbnails-container mt-3">
-                    <button class="thumb-nav prev">&lt;</button>
+                <div class="thumbnails-container mt-3" role="navigation" aria-label="Miniatures de navigation">
+                    <button class="thumb-nav prev" aria-label="Faire défiler les miniatures vers la gauche">&lt;</button>
                     <div class="thumbnails-wrapper">
-                        ${product.images.map((img, i) => `
-                            <img class="thumbnail ${i===0?'active':''}" 
-                                 src="assets/img/products/webp/small/${getBaseName(img)}.webp" 
-                                 data-bs-target="#carousel-${product.slug}" 
-                                 data-bs-slide-to="${i}" 
-                                 alt="${product.title}">
-                        `).join('')}
+                    ${product.images.map((img, i) => `
+                        <img class="thumbnail ${i===0?'active':''}"
+                            src="assets/img/products/webp/small/${getBaseName(img)}.webp"
+                            data-bs-target="#carousel-${product.slug}"
+                            data-bs-slide-to="${i}"
+                            alt="Miniature ${i+1} pour ${product.title}"
+                            role="button"
+                            tabindex="0">
+                    `).join('')}
                     </div>
-                    <button class="thumb-nav next">&gt;</button>
+                    <button class="thumb-nav next" aria-label="Faire défiler les miniatures vers la droite">&gt;</button>
                 </div>
             </div>
 
@@ -255,6 +261,12 @@ async function renderProduct() {
             const thumbWidth = thumb.offsetWidth;
             const scrollLeft = thumb.offsetLeft - (wrapperWidth / 2) + (thumbWidth / 2);
             thumbnailsWrapper.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+        });
+        thumb.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            thumb.click();
+            }
         });
     });
 
